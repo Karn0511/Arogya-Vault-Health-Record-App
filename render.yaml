@@ -1,0 +1,47 @@
+# Render service definitions for Arogya Vault
+# Replace <REPLACE_ME> values or set environment variables in Render dashboard.
+# Deploy backend first, then frontend.
+
+services:
+  - type: web
+    name: arogya-backend
+    env: node
+    plan: free
+    repo: https://github.com/<owner>/<repo>
+    branch: main
+    path: arogya-vault/backend
+    buildCommand: npm ci
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        value: "<REPLACE_ME_MONGO_URI>"
+      - key: JWT_SECRET
+        value: "<REPLACE_ME_JWT_SECRET>"
+      - key: NODE_ENV
+        value: "production"
+      - key: CORS_ORIGIN
+        value: "https://<your-frontend>.onrender.com"
+      - key: UPLOAD_DIR
+        value: "/tmp/uploads"
+      - key: AWS_ACCESS_KEY_ID
+        value: "<REPLACE_ME_AWS_ACCESS_KEY_ID>"
+      - key: AWS_SECRET_ACCESS_KEY
+        value: "<REPLACE_ME_AWS_SECRET_ACCESS_KEY>"
+      - key: S3_BUCKET
+        value: "<REPLACE_ME_S3_BUCKET>"
+    healthCheckPath: /
+    autoDeploy: true
+
+  - type: static
+    name: arogya-frontend
+    env: static
+    plan: free
+    repo: https://github.com/<owner>/<repo>
+    branch: main
+    path: arogya-vault
+    buildCommand: npm ci && npm run build
+    publishPath: dist/arogya-vault
+    envVars:
+      - key: API_BASE
+        value: "https://<your-backend>.onrender.com/api"
+    autoDeploy: true
