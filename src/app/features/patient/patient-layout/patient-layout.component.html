@@ -1,0 +1,61 @@
+<div class="flex min-h-screen w-full text-foreground relative overflow-hidden">
+  <!-- Animated Background - Light Mode -->
+  <div class="fixed inset-0 -z-10 overflow-hidden dark:hidden">
+    <div class="absolute inset-0 bg-background"></div>
+  </div>
+
+  <!-- Animated Background - Dark Mode -->
+  <div class="hidden dark:block fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute inset-0 bg-background"></div>
+  </div>
+
+  <!-- Sidebar - Desktop always visible, Mobile overlay -->
+  <app-sidebar 
+    [isOpen]="isSidebarOpen" 
+    [isCollapsed]="isSidebarCollapsed" 
+    (toggleCollapse)="toggleSidebarCollapse()"
+    (closeSidebar)="isSidebarOpen = false"
+    class="hidden lg:block">
+  </app-sidebar>
+
+  <!-- Main Content Area -->
+  <div class="flex flex-1 flex-col w-full transition-all duration-300"
+    [ngClass]="isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'">
+    
+    <!-- Header with responsive hamburger -->
+    <app-header (menuClick)="toggleSidebar()"></app-header>
+
+    <!-- Main Content with responsive padding -->
+    <main class="flex-1 overflow-x-hidden overflow-y-auto custom-scrollbar bg-background">
+      <div class="p-3 sm:p-4 md:p-6 lg:p-8 max-w-[1920px] mx-auto w-full">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <app-footer class="hidden sm:block"></app-footer>
+  </div>
+
+  <!-- Mobile Sidebar Overlay -->
+  <div 
+    *ngIf="isSidebarOpen" 
+    class="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
+    (click)="isSidebarOpen = false">
+  </div>
+
+  <!-- Mobile Sidebar -->
+  <div 
+    class="lg:hidden fixed inset-y-0 left-0 z-50 w-64 sm:w-72 transform transition-transform duration-300 ease-in-out"
+    [class.translate-x-0]="isSidebarOpen"
+    [class.-translate-x-full]="!isSidebarOpen">
+    <app-sidebar 
+      [isOpen]="true" 
+      [isCollapsed]="false" 
+      (toggleCollapse)="toggleSidebarCollapse()"
+      (closeSidebar)="isSidebarOpen = false">
+    </app-sidebar>
+  </div>
+
+  <!-- Glass Menu -->
+  <app-glass-menu [isOpen]="isMenuOpen" (close)="isMenuOpen = false"></app-glass-menu>
+</div>

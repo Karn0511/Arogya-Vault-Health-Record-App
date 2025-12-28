@@ -1,0 +1,95 @@
+<div class="space-y-6 animate-fade-in">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">Appointments</h1>
+      <p class="text-muted-foreground">Manage your doctor appointments</p>
+    </div>
+    <button (click)="openBookModal()"
+      class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+      Book Appointment
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+
+  <!-- Upcoming Appointments -->
+  <section *ngIf="!loading()">
+    <h2 class="text-xl font-semibold mb-4">Upcoming ({{ upcomingAppointments().length }})</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div *ngFor="let appt of upcomingAppointments()" class="glass-effect p-5 rounded-lg">
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <h3 class="font-semibold text-lg">{{ appt.doctorName }}</h3>
+            <p class="text-sm text-muted-foreground">{{ appt.specialization }}</p>
+          </div>
+          <span [ngClass]="getStatusColor(appt.status)" class="px-2 py-1 rounded text-xs font-medium">
+            {{ appt.status }}
+          </span>
+        </div>
+        <div class="flex items-center gap-4 mb-4 text-sm">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>{{ appt.appointmentDateTime | date:'mediumDate' }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ appt.appointmentDateTime | date:'shortTime' }}</span>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button *ngIf="appt.meetingLink"
+            class="flex-1 px-3 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors text-sm">
+            Join Video Call
+          </button>
+          <button (click)="cancelAppointment(appt)"
+            class="px-3 py-2 border border-border rounded hover:bg-accent transition-colors text-sm">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+    <p *ngIf="upcomingAppointments().length === 0" class="text-muted-foreground text-center py-8">
+      No upcoming appointments
+    </p>
+  </section>
+
+  <!-- Past Appointments -->
+  <section *ngIf="!loading() && pastAppointments().length > 0">
+    <h2 class="text-xl font-semibold mb-4">Past Appointments</h2>
+    <div class="glass-effect rounded-lg p-4">
+      <div *ngFor="let appt of pastAppointments(); let last = last" class="flex items-center justify-between py-3"
+        [ngClass]="!last ? 'border-b border-border' : ''">
+        <div class="flex-1">
+          <h3 class="font-semibold">{{ appt.doctorName }}</h3>
+          <p class="text-xs text-muted-foreground">{{ appt.specialization }} • {{ appt.appointmentDateTime |
+            date:'medium' }}</p>
+        </div>
+        <span [ngClass]="getStatusColor(appt.status)" class="px-2 py-1 rounded text-xs font-medium">
+          {{ appt.status }}
+        </span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Book Modal (simplified) -->
+<div *ngIf="showBookModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div class="glass-effect rounded-lg p-6 max-w-md w-full">
+    <h3 class="text-xl font-bold mb-4">Book Appointment</h3>
+    <p class="text-muted-foreground mb-4">Feature coming soon...</p>
+    <button (click)="closeBookModal()"
+      class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg">Close</button>
+  </div>
+</div>

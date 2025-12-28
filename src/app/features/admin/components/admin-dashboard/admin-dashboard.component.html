@@ -1,0 +1,195 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+  <!-- Header -->
+  <div class="bg-gradient-to-r from-blue-600 to-teal-600 text-white p-8 shadow-xl">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl font-black tracking-tight">📊 Admin Dashboard</h1>
+          <p class="text-blue-100 mt-2">System Overview & Management</p>
+        </div>
+        <button
+          (click)="refreshStats()"
+          [disabled]="loading"
+          class="px-6 py-3 bg-white/20 hover:bg-white/30 rounded-lg font-semibold transition-all disabled:opacity-50"
+        >
+          🔄 Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="max-w-7xl mx-auto p-8">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex items-center justify-center h-96">
+      <div class="text-center">
+        <div class="inline-block">
+          <div class="w-16 h-16 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+        </div>
+        <p class="text-white mt-4 text-lg">Loading dashboard...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="bg-red-500/20 border border-red-500 text-red-300 p-4 rounded-lg mb-6">
+      {{ error }}
+    </div>
+
+    <!-- Stats Grid -->
+    <div *ngIf="stats && !loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Total Users -->
+      <div class="bg-gradient-to-br from-blue-600/20 to-blue-400/10 border border-blue-500/30 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
+           tabindex="0"
+           role="button"
+           (click)="navigateTo('users')"
+           (keydown.enter)="navigateTo('users')"
+           (keydown.space)="navigateTo('users')">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-blue-300 text-sm font-semibold mb-1">👥 Total Users</p>
+            <p class="text-4xl font-black text-white">{{ stats.totalUsers }}</p>
+          </div>
+          <div class="text-3xl">📱</div>
+        </div>
+        <p class="text-blue-300/70 text-xs mt-3">Click to manage users</p>
+      </div>
+
+      <!-- Total Doctors -->
+      <div class="bg-gradient-to-br from-green-600/20 to-green-400/10 border border-green-500/30 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
+           tabindex="0"
+           role="button"
+           (click)="navigateTo('doctors')"
+           (keydown.enter)="navigateTo('doctors')"
+           (keydown.space)="navigateTo('doctors')">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-green-300 text-sm font-semibold mb-1">👨‍⚕️ Doctors</p>
+            <p class="text-4xl font-black text-white">{{ stats.totalDoctors }}</p>
+          </div>
+          <div class="text-3xl">💼</div>
+        </div>
+        <p class="text-green-300/70 text-xs mt-3">Click to manage doctors</p>
+      </div>
+
+      <!-- Total Appointments -->
+      <div class="bg-gradient-to-br from-purple-600/20 to-purple-400/10 border border-purple-500/30 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
+           tabindex="0"
+           role="button"
+           (click)="navigateTo('appointments')"
+           (keydown.enter)="navigateTo('appointments')"
+           (keydown.space)="navigateTo('appointments')">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-purple-300 text-sm font-semibold mb-1">📅 Appointments</p>
+            <p class="text-4xl font-black text-white">{{ stats.totalAppointments }}</p>
+          </div>
+          <div class="text-3xl">🗓️</div>
+        </div>
+        <p class="text-purple-300/70 text-xs mt-3">Active: {{ stats.activeAppointments }}</p>
+      </div>
+
+      <!-- Total Medicines -->
+      <div class="bg-gradient-to-br from-orange-600/20 to-orange-400/10 border border-orange-500/30 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
+           tabindex="0"
+           role="button"
+           (click)="navigateTo('medicines')"
+           (keydown.enter)="navigateTo('medicines')"
+           (keydown.space)="navigateTo('medicines')">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-orange-300 text-sm font-semibold mb-1">💊 Medicines</p>
+            <p class="text-4xl font-black text-white">{{ stats.totalMedicines }}</p>
+          </div>
+          <div class="text-3xl">🏥</div>
+        </div>
+        <p class="text-orange-300/70 text-xs mt-3">Click to manage medicines</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div *ngIf="stats && !loading" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Pending Approvals -->
+      <div class="bg-gradient-to-br from-red-600/20 to-red-400/10 border border-red-500/30 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
+           tabindex="0"
+           role="button"
+           (click)="navigateTo('approvals')"
+           (keydown.enter)="navigateTo('approvals')"
+           (keydown.space)="navigateTo('approvals')">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-red-300 text-sm font-semibold mb-1">⏳ Pending Approvals</p>
+            <p class="text-3xl font-black text-white">{{ stats.pendingApprovals }}</p>
+          </div>
+          <div class="text-4xl">⚠️</div>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="bg-gradient-to-br from-cyan-600/20 to-cyan-400/10 border border-cyan-500/30 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
+           tabindex="0"
+           role="button"
+           (click)="navigateTo('analytics')"
+           (keydown.enter)="navigateTo('analytics')"
+           (keydown.space)="navigateTo('analytics')">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-cyan-300 text-sm font-semibold mb-1">📈 Analytics</p>
+            <p class="text-lg text-cyan-200">View Reports</p>
+          </div>
+          <div class="text-4xl">📊</div>
+        </div>
+      </div>
+
+      <!-- System Settings -->
+      <div class="bg-gradient-to-br from-indigo-600/20 to-indigo-400/10 border border-indigo-500/30 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer"
+           tabindex="0"
+           role="button"
+           (click)="navigateTo('settings')"
+           (keydown.enter)="navigateTo('settings')"
+           (keydown.space)="navigateTo('settings')">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-indigo-300 text-sm font-semibold mb-1">⚙️ System Config</p>
+            <p class="text-lg text-indigo-200">Settings</p>
+          </div>
+          <div class="text-4xl">🔧</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div *ngIf="!loading" class="bg-slate-800/50 border border-slate-700 rounded-lg p-6">
+      <h2 class="text-2xl font-bold text-white mb-4">🔔 Quick Access</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <button
+          (click)="navigateTo('users')"
+          class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-lg text-white transition-all text-left"
+        >
+          <p class="font-semibold">User Management</p>
+          <p class="text-sm text-slate-400 mt-1">Manage user accounts</p>
+        </button>
+        <button
+          (click)="navigateTo('doctors')"
+          class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-lg text-white transition-all text-left"
+        >
+          <p class="font-semibold">Doctor Management</p>
+          <p class="text-sm text-slate-400 mt-1">Verify & manage doctors</p>
+        </button>
+        <button
+          (click)="navigateTo('medicines')"
+          class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-lg text-white transition-all text-left"
+        >
+          <p class="font-semibold">Medicine Catalog</p>
+          <p class="text-sm text-slate-400 mt-1">Add & edit medicines</p>
+        </button>
+        <button
+          (click)="navigateTo('audit-logs')"
+          class="p-4 bg-slate-700/50 hover:bg-slate-700 rounded-lg text-white transition-all text-left"
+        >
+          <p class="font-semibold">Audit Logs</p>
+          <p class="text-sm text-slate-400 mt-1">Track system activity</p>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

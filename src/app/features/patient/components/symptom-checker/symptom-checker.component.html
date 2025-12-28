@@ -1,0 +1,164 @@
+<div class="max-w-4xl mx-auto p-6">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">🤖 AI Symptom Checker</h1>
+    <p class="text-gray-600">
+      Describe your symptoms and get AI-powered health advice.
+      <span class="text-sm text-red-600">*This is not a substitute for professional medical advice.</span>
+    </p>
+  </div>
+
+  <!-- Symptom Form -->
+  <form [formGroup]="symptomForm" (ngSubmit)="checkSymptoms()" class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <!-- Symptoms -->
+    <div class="mb-6">
+      <label for="symptoms" class="block text-sm font-medium text-gray-700 mb-2">
+        Describe Your Symptoms *
+      </label>
+      <textarea
+        id="symptoms"
+        formControlName="symptoms"
+        rows="4"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="e.g., I have been experiencing fever, headache, and body aches for the past 2 days..."
+      ></textarea>
+      <div *ngIf="symptomForm.get('symptoms')?.invalid && symptomForm.get('symptoms')?.touched"
+           class="text-red-600 text-sm mt-1">
+        Please describe your symptoms (minimum 10 characters)
+      </div>
+    </div>
+
+    <!-- Patient Data (Optional) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div>
+        <label for="age" class="block text-sm font-medium text-gray-700 mb-2">
+          Age (Optional)
+        </label>
+        <input
+          type="number"
+          id="age"
+          formControlName="age"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="e.g., 30"
+        />
+      </div>
+
+      <div>
+        <label for="gender" class="block text-sm font-medium text-gray-700 mb-2">
+          Gender (Optional)
+        </label>
+        <select
+          id="gender"
+          formControlName="gender"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <label for="medicalHistory" class="block text-sm font-medium text-gray-700 mb-2">
+        Medical History (Optional)
+      </label>
+      <textarea
+        id="medicalHistory"
+        formControlName="medicalHistory"
+        rows="2"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="e.g., Hypertension, Diabetes..."
+      ></textarea>
+    </div>
+
+    <div class="mb-6">
+      <label for="currentMedications" class="block text-sm font-medium text-gray-700 mb-2">
+        Current Medications (Optional)
+      </label>
+      <input
+        type="text"
+        id="currentMedications"
+        formControlName="currentMedications"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="e.g., Aspirin 500mg, Metformin..."
+      />
+    </div>
+
+    <!-- Submit Buttons -->
+    <div class="flex gap-4">
+      <button
+        type="submit"
+        [disabled]="symptomForm.invalid || loading"
+        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+      >
+        <span *ngIf="!loading">🔍 Analyze Symptoms</span>
+        <span *ngIf="loading" class="flex items-center">
+          <svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Analyzing...
+        </span>
+      </button>
+      <button
+        type="button"
+        (click)="reset()"
+        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+      >
+        Reset
+      </button>
+    </div>
+  </form>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <p class="text-sm text-red-700">{{ error }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div *ngIf="result && result.success" class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">📋 Analysis Results</h2>
+
+    <!-- AI Advice -->
+    <div class="mb-6 p-4 bg-blue-50 rounded-md border border-blue-200">
+      <h3 class="font-semibold text-blue-900 mb-2">💡 Health Advice</h3>
+      <p class="text-gray-700 whitespace-pre-wrap">{{ result?.advice }}</p>
+    </div>
+
+    <!-- Recommendations -->
+    <div *ngIf="result.recommendations && result.recommendations.length > 0" class="mb-6">
+      <h3 class="font-semibold text-gray-900 mb-3">✅ Recommendations</h3>
+      <ul class="space-y-2">
+        <li *ngFor="let rec of result.recommendations"
+            class="flex items-start">
+          <span class="text-green-600 mr-2">•</span>
+          <span class="text-gray-700">{{ rec }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-6 p-4 bg-yellow-50 rounded-md border border-yellow-200">
+      <p class="text-sm text-yellow-800">
+        <strong>⚠️ Important:</strong> This AI-generated advice is for informational purposes only and should not replace professional medical consultation.
+        If you're experiencing severe symptoms, please seek immediate medical attention.
+      </p>
+    </div>
+
+    <!-- Timestamp -->
+    <p class="text-xs text-gray-500 mt-4">
+      Analysis generated: {{ result?.timestamp | date:'medium' }}
+    </p>
+  </div>
+</div>

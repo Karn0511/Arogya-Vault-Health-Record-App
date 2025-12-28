@@ -1,0 +1,103 @@
+<div class="ai-chatbot-container">
+  <!-- Floating Chat Button -->
+  <button
+    *ngIf="!isOpen"
+    class="chat-fab"
+    (click)="toggleChat()"
+    aria-label="Open AI Chatbot">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+    <span class="chat-badge">AI</span>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window" *ngIf="isOpen" [class.minimized]="isMinimized">
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="header-content">
+        <div class="ai-avatar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 16v-4"></path>
+            <path d="M12 8h.01"></path>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h4>Arogya AI Assistant</h4>
+          <span class="status">Online</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button (click)="toggleMinimize()" class="icon-btn" aria-label="Minimize">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <button (click)="closeChat()" class="icon-btn" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" *ngIf="!isMinimized">
+      <div
+        *ngFor="let message of messages"
+        class="message"
+        [class.user-message]="message.role === 'user'"
+        [class.ai-message]="message.role === 'ai'">
+        <div class="message-content">
+          <p>{{ message.content }}</p>
+          <span class="message-time">{{ message.timestamp | date:'short' }}</span>
+        </div>
+      </div>
+
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading" class="message ai-message">
+        <div class="message-content">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input" *ngIf="!isMinimized">
+      <div class="input-wrapper">
+        <input
+          type="text"
+          [(ngModel)]="userMessage"
+          (keypress)="onKeyPress($event)"
+          placeholder="Type your message..."
+          [disabled]="isLoading"
+          aria-label="Message input">
+        <button
+          (click)="sendMessage()"
+          [disabled]="!userMessage.trim() || isLoading"
+          class="send-btn"
+          aria-label="Send message">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <div class="quick-actions">
+        <button (click)="clearChat()" class="quick-action-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

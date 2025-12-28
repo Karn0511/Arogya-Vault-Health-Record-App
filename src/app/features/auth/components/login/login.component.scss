@@ -1,0 +1,41 @@
+// Component-specific styles can go here if needed
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-fast {
+  animation: spin 3s linear infinite;
+}
+
+.spin-reverse {
+  animation: spin 5s linear infinite reverse;
+}
+
+// Booting screen animations
+:host ::ng-deep {
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

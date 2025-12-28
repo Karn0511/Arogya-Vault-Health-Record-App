@@ -1,0 +1,204 @@
+fix<div class="file-storage-container">
+  <!-- Header -->
+  <div class="storage-header">
+    <div class="header-content">
+      <h2>File Storage</h2>
+      <p>Store, manage and access your medical documents securely</p>
+    </div>
+    <button (click)="openUploadModal()" class="btn-primary" aria-label="Upload new file" title="Upload new file">
+      <span>📤 Upload File</span>
+    </button>
+  </div>
+
+  <!-- Storage Stats -->
+  <div *ngIf="storageStats" class="storage-stats">
+    <div class="stat-card">
+      <div class="stat-icon">📁</div>
+      <div class="stat-content">
+        <h3>{{ storageStats.totalFiles }}</h3>
+        <p>Total Files</p>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💾</div>
+      <div class="stat-content">
+        <h3>{{ formatBytes(storageStats.totalSize) }}</h3>
+        <p>Storage Used</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="filter-section">
+    <label for="category">Filter by Category:</label>
+    <select
+      id="category"
+      [(ngModel)]="selectedCategory"
+      (change)="onCategoryChange()"
+      class="filter-select">
+      <option *ngFor="let cat of categories" [value]="cat.value">
+        {{ cat.label }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Files List -->
+  <div class="files-section">
+    <div *ngIf="files.length === 0" class="no-files">
+      <p>📄 No files found. Upload your first document!</p>
+    </div>
+
+    <div *ngIf="files.length > 0" class="files-grid">
+      <div *ngFor="let file of files" class="file-card">
+        <div class="file-header">
+          <span class="file-icon">{{ getFileIcon(file.fileType) }}</span>
+          <div class="file-info">
+            <h4 title="{{ file.originalName }}">{{ file.originalName }}</h4>
+            <span class="file-category">{{ file.fileCategory }}</span>
+          </div>
+        </div>
+
+        <div class="file-details">
+          <p class="file-size">📊 {{ formatBytes(file.fileSize) }}</p>
+          <p class="file-date">📅 {{ file.uploadedAt | date:'short' }}</p>
+          <p *ngIf="file.description" class="file-description">{{ file.description }}</p>
+        </div>
+
+        <div class="file-actions">
+          <button
+            (click)="downloadFile(file)"
+            class="btn-download"
+            title="Download">
+            ⬇️ Download
+          </button>
+          <button
+            (click)="archiveFile(file._id)"
+            class="btn-archive"
+            title="Archive">
+            📦 Archive
+          </button>
+          <button
+            (click)="deleteFile(file._id)"
+            [class.confirm]="deleteConfirm === file._id"
+            class="btn-delete"
+            [title]="deleteConfirm === file._id ? 'Click again to confirm' : 'Delete'">
+            {{ deleteConfirm === file._id ? '⚠️ Confirm?' : '🗑️ Delete' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="files.length > 0" class="pagination">
+    <button
+      (click)="previousPage()"
+      [disabled]="currentPage === 1"
+      class="btn-pagination">
+      ← Previous
+    </button>
+    <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+    <button
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+      class="btn-pagination">
+      Next →
+    </button>
+  </div>
+
+  <!-- Upload Modal -->
+  <div *ngIf="showUploadModal"
+       class="modal-overlay"
+       tabindex="0"
+       role="dialog"
+       aria-modal="true"
+       (click)="closeUploadModal()"
+       (keydown.escape)="closeUploadModal()">
+    <div class="modal-content"
+         tabindex="0"
+         role="document"
+         (click)="$event.stopPropagation()"
+         (keydown)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Upload File</h3>
+        <button (click)="closeUploadModal()" class="btn-close">✕</button>
+      </div>
+
+      <form [formGroup]="uploadForm" class="upload-form">
+        <!-- File Input -->
+        <div class="form-group">
+          <label for="file">Select File:</label>
+          <div class="file-input-wrapper">
+            <input
+              type="file"
+              id="file"
+              (change)="onFileSelected($event)"
+              accept="image/*,.pdf,.doc,.docx,.txt"
+              class="file-input">
+            <div class="file-input-label">
+              <span *ngIf="!selectedFile" class="placeholder">
+                📁 Click to select file or drag & drop
+              </span>
+              <span *ngIf="selectedFile" class="selected">
+                ✓ {{ selectedFile.name }}
+              </span>
+            </div>
+          </div>
+          <small>Max 50MB. Supported: JPG, PNG, GIF, PDF, DOC, DOCX, TXT</small>
+        </div>
+
+        <!-- Category Select -->
+        <div class="form-group">
+          <label for="category-select">Category:</label>
+          <select
+            id="category-select"
+            formControlName="category"
+            class="form-control">
+            <option *ngFor="let cat of categories.slice(1)"
+              [value]="cat.value">
+              {{ cat.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label for="description">Description (optional):</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            class="form-control"
+            rows="4"
+            placeholder="Add a description..."></textarea>
+          <small>{{ uploadForm.get('description')?.value?.length || 0 }}/500 characters</small>
+        </div>
+
+        <!-- Progress Bar -->
+        <div *ngIf="uploading" class="progress-section">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+          </div>
+          <p class="progress-text">{{ uploadProgress }}%</p>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="modal-actions">
+          <button
+            type="button"
+            (click)="closeUploadModal()"
+            [disabled]="uploading"
+            class="btn-secondary">
+            Cancel
+          </button>
+          <button
+            type="button"
+            (click)="onUpload()"
+            [disabled]="!selectedFile || uploading"
+            class="btn-primary">
+            {{ uploading ? '⏳ Uploading...' : '📤 Upload' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
