@@ -73,7 +73,7 @@ export class ImageAnalysisComponent {
       }).toPromise();
 
       if (!result || !result.success) {
-        throw new Error(result?.error || 'Failed to analyze image');
+        throw new Error((result as any)?.error || 'Failed to analyze image');
       }
 
       this.analysis = result?.analysis || '';

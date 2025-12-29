@@ -2,12 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { AiService, ChatResponse } from '@core/services/ai.service';
 import { AuthService } from '@core/services/auth.service';
 
+export interface GroundingSource {
+    title: string;
+    url?: string;
+    uri?: string;
+}
+
 interface ChatMessage {
   id: string;
   role: 'user' | 'model';
   text: string;
   image?: string;
   isLoading?: boolean;
+  sources?: GroundingSource[];
 }
 
 @Component({
@@ -21,6 +28,10 @@ export class AIAssistantComponent implements OnInit {
   input = '';
   isLoading = false;
   selectedImage: string | null = null;
+
+  // New properties to fix build errors
+  showModeSelector = false;
+  aiMode: 'fast' | 'normal' | 'pro' = 'normal';
 
   userName = 'User';
 
@@ -45,6 +56,12 @@ export class AIAssistantComponent implements OnInit {
         text: `Hello ${this.userName}! I'm your ArogyaVault AI assistant. How can I help you with your health records today? You can ask me to summarize documents, explain medical terms, or provide health insights.`,
       });
     }
+  }
+
+  // New method to fix build errors
+  setMode(mode: 'fast' | 'normal' | 'pro'): void {
+    this.aiMode = mode;
+    this.showModeSelector = false;
   }
 
   async sendMessage(): Promise<void> {
