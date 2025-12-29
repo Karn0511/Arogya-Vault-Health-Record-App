@@ -1,7 +1,11 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'arogya_vault_super_secret_key_2024';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET is not set. Set JWT_SECRET in environment for production.');
+}
 
 /**
  * Generate a JWT token
@@ -42,7 +46,6 @@ if (require.main === module) {
     console.log('\n=== Decoded Token ===');
     console.log(jwt.decode(token));
     console.log('\n=== Token Info ===');
-    console.log('Secret:', JWT_SECRET);
     console.log('Expires in: 24 hours');
 }
 
