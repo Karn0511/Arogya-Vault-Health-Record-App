@@ -31,3 +31,6 @@ export * from './separator.component';
 
 // Alert
 export * from './alert.component';
+
+// Dropdown Menu
+export * from './dropdown-menu.component';
