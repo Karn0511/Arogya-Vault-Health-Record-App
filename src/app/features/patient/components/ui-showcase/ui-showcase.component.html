@@ -1,0 +1,317 @@
+<div class="min-h-screen bg-background p-8">
+  <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <div>
+      <h1 class="text-4xl font-bold text-foreground">UI Components Showcase</h1>
+      <p class="text-muted-foreground mt-2">
+        Explore all the shadcn-style UI components available in ArogyaVault
+      </p>
+    </div>
+
+    <ui-separator></ui-separator>
+
+    <!-- Buttons Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Buttons</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <div class="flex flex-wrap gap-4">
+            <button uiButton>Default Button</button>
+            <button uiButton variant="destructive">Destructive</button>
+            <button uiButton variant="outline">Outline</button>
+            <button uiButton variant="secondary">Secondary</button>
+            <button uiButton variant="ghost">Ghost</button>
+            <button uiButton variant="link">Link</button>
+          </div>
+          <div class="flex flex-wrap gap-4 mt-4">
+            <button uiButton size="sm">Small</button>
+            <button uiButton>Default</button>
+            <button uiButton size="lg">Large</button>
+            <button uiButton size="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+          </div>
+        </ui-card-content>
+      </ui-card>
+    </section>
+
+    <!-- Cards Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Cards</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Card Title</ui-card-title>
+            <ui-card-description>Card description goes here</ui-card-description>
+          </ui-card-header>
+          <ui-card-content>
+            <p class="text-sm text-muted-foreground">
+              This is the card content. You can put any content here.
+            </p>
+          </ui-card-content>
+          <ui-card-footer>
+            <button uiButton size="sm">Action</button>
+          </ui-card-footer>
+        </ui-card>
+
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Health Record</ui-card-title>
+            <ui-card-description>Lab Report - Blood Test</ui-card-description>
+          </ui-card-header>
+          <ui-card-content>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-sm">Date:</span>
+                <span class="text-sm font-medium">Nov 24, 2025</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-sm">Status:</span>
+                <ui-badge variant="success">Normal</ui-badge>
+              </div>
+            </div>
+          </ui-card-content>
+        </ui-card>
+
+        <ui-card>
+          <ui-card-header>
+            <ui-card-title>Appointment</ui-card-title>
+            <ui-card-description>Dr. Smith - Cardiology</ui-card-description>
+          </ui-card-header>
+          <ui-card-content>
+            <p class="text-sm">Tomorrow at 10:00 AM</p>
+          </ui-card-content>
+          <ui-card-footer>
+            <button uiButton variant="outline" size="sm">Reschedule</button>
+          </ui-card-footer>
+        </ui-card>
+      </div>
+    </section>
+
+    <!-- Badges Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Badges</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <div class="flex flex-wrap gap-2">
+            <ui-badge>Default</ui-badge>
+            <ui-badge variant="secondary">Secondary</ui-badge>
+            <ui-badge variant="destructive">Destructive</ui-badge>
+            <ui-badge variant="outline">Outline</ui-badge>
+            <ui-badge variant="success">Success</ui-badge>
+            <ui-badge variant="warning">Warning</ui-badge>
+            <ui-badge variant="info">Info</ui-badge>
+          </div>
+        </ui-card-content>
+      </ui-card>
+    </section>
+
+    <!-- Alerts Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Alerts</h2>
+      <div class="space-y-4">
+        <ui-alert>
+          <ui-alert-title>Default Alert</ui-alert-title>
+          <ui-alert-description>
+            This is a default alert message.
+          </ui-alert-description>
+        </ui-alert>
+
+        <ui-alert variant="success">
+          <ui-alert-title>Success!</ui-alert-title>
+          <ui-alert-description>
+            Your health record has been uploaded successfully.
+          </ui-alert-description>
+        </ui-alert>
+
+        <ui-alert variant="warning">
+          <ui-alert-title>Warning</ui-alert-title>
+          <ui-alert-description>
+            Your prescription is about to expire. Please consult your doctor.
+          </ui-alert-description>
+        </ui-alert>
+
+        <ui-alert variant="destructive">
+          <ui-alert-title>Error</ui-alert-title>
+          <ui-alert-description>
+            Failed to upload file. Please try again.
+          </ui-alert-description>
+        </ui-alert>
+      </div>
+    </section>
+
+    <!-- Toast Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Toast Notifications</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <div class="flex flex-wrap gap-4">
+            <button uiButton (click)="showSuccessToast()">Show Success Toast</button>
+            <button uiButton variant="destructive" (click)="showErrorToast()">Show Error Toast</button>
+            <button uiButton variant="secondary" (click)="showInfoToast()">Show Info Toast</button>
+          </div>
+        </ui-card-content>
+      </ui-card>
+    </section>
+
+    <!-- Dialog Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Dialog</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <button uiButton (click)="openDialog()">Open Dialog</button>
+        </ui-card-content>
+      </ui-card>
+
+      <ui-dialog [open]="dialogOpen" (openChange)="closeDialog()">
+        <ui-dialog-header>
+          <ui-dialog-title>Upload Medical Record</ui-dialog-title>
+          <ui-dialog-description>
+            Add a new medical record to your health vault.
+          </ui-dialog-description>
+        </ui-dialog-header>
+        <div class="space-y-4">
+          <div>
+            <label uiLabel for="record-type">Record Type</label>
+            <input uiInput id="record-type" placeholder="e.g., Lab Report" class="mt-2" />
+          </div>
+          <div>
+            <label uiLabel for="record-date">Date</label>
+            <input uiInput id="record-date" type="date" class="mt-2" />
+          </div>
+        </div>
+        <ui-dialog-footer>
+          <button uiButton variant="outline" (click)="closeDialog()">Cancel</button>
+          <button uiButton (click)="closeDialog()">Upload</button>
+        </ui-dialog-footer>
+      </ui-dialog>
+    </section>
+
+    <!-- Form Inputs Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Form Inputs</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <div class="space-y-4 max-w-md">
+            <div>
+              <label uiLabel for="name">Name</label>
+              <input uiInput id="name" placeholder="Enter your name" class="mt-2" />
+            </div>
+            <div>
+              <label uiLabel for="email">Email</label>
+              <input uiInput id="email" type="email" placeholder="name@example.com" class="mt-2" />
+            </div>
+            <div>
+              <label uiLabel for="message">Message</label>
+              <textarea uiTextarea id="message" placeholder="Type your message here" class="mt-2"></textarea>
+            </div>
+          </div>
+        </ui-card-content>
+      </ui-card>
+    </section>
+
+    <!-- Table Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Table</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <ui-table>
+            <thead uiTableHeader>
+              <tr uiTableRow>
+                <th uiTableHead>Record Type</th>
+                <th uiTableHead>Date</th>
+                <th uiTableHead>Doctor</th>
+                <th uiTableHead>Status</th>
+              </tr>
+            </thead>
+            <tbody uiTableBody>
+              <tr uiTableRow>
+                <td uiTableCell>Lab Report</td>
+                <td uiTableCell>Nov 20, 2025</td>
+                <td uiTableCell>Dr. Smith</td>
+                <td uiTableCell><ui-badge variant="success">Normal</ui-badge></td>
+              </tr>
+              <tr uiTableRow>
+                <td uiTableCell>Prescription</td>
+                <td uiTableCell>Nov 18, 2025</td>
+                <td uiTableCell>Dr. Johnson</td>
+                <td uiTableCell><ui-badge variant="info">Active</ui-badge></td>
+              </tr>
+              <tr uiTableRow>
+                <td uiTableCell>X-Ray</td>
+                <td uiTableCell>Nov 15, 2025</td>
+                <td uiTableCell>Dr. Williams</td>
+                <td uiTableCell><ui-badge variant="warning">Review</ui-badge></td>
+              </tr>
+            </tbody>
+          </ui-table>
+        </ui-card-content>
+      </ui-card>
+    </section>
+
+    <!-- Tabs Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Tabs</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <ui-tabs [(value)]="activeTab">
+            <ui-tab label="Account" value="account"></ui-tab>
+            <ui-tab label="Password" value="password"></ui-tab>
+            <ui-tab label="Settings" value="settings"></ui-tab>
+          </ui-tabs>
+
+          <ui-tab-content value="account" [activeTab]="activeTab">
+            <div class="mt-4 space-y-4">
+              <h3 class="font-medium">Account Settings</h3>
+              <p class="text-sm text-muted-foreground">
+                Manage your account settings and preferences.
+              </p>
+            </div>
+          </ui-tab-content>
+
+          <ui-tab-content value="password" [activeTab]="activeTab">
+            <div class="mt-4 space-y-4">
+              <h3 class="font-medium">Password</h3>
+              <p class="text-sm text-muted-foreground">
+                Change your password and security settings.
+              </p>
+            </div>
+          </ui-tab-content>
+
+          <ui-tab-content value="settings" [activeTab]="activeTab">
+            <div class="mt-4 space-y-4">
+              <h3 class="font-medium">General Settings</h3>
+              <p class="text-sm text-muted-foreground">
+                Configure general application settings.
+              </p>
+            </div>
+          </ui-tab-content>
+        </ui-card-content>
+      </ui-card>
+    </section>
+
+    <!-- Skeleton Loaders Section -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Skeleton Loaders</h2>
+      <ui-card>
+        <ui-card-content class="pt-6">
+          <div class="space-y-4">
+            <ui-skeleton class="h-12 w-full"></ui-skeleton>
+            <ui-skeleton class="h-12 w-3/4"></ui-skeleton>
+            <ui-skeleton class="h-12 w-1/2"></ui-skeleton>
+            <div class="flex space-x-4">
+              <ui-skeleton class="h-24 w-24 rounded-full"></ui-skeleton>
+              <div class="space-y-2 flex-1">
+                <ui-skeleton class="h-4 w-full"></ui-skeleton>
+                <ui-skeleton class="h-4 w-5/6"></ui-skeleton>
+                <ui-skeleton class="h-4 w-4/6"></ui-skeleton>
+              </div>
+            </div>
+          </div>
+        </ui-card-content>
+      </ui-card>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<div *ngIf="isOpen" class="fixed inset-0 z-[100] flex justify-end" @overlay>
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" (click)="onClose()"></div>
+
+    <!-- Menu Container -->
+    <div class="relative w-full max-w-md h-full bg-[#0a0a0a]/95 backdrop-blur-2xl text-white p-8 sm:p-12 shadow-2xl flex flex-col border-l border-white/10"
+        @menu>
+
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-12">
+            <span class="text-xs uppercase tracking-[0.2em] text-gray-400 font-medium">Menu</span>
+            <button (click)="onClose()"
+                class="group flex items-center gap-3 text-xs uppercase tracking-[0.2em] hover:text-primary transition-colors">
+                Close
+                <div
+                    class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-primary group-hover:bg-primary/10 transition-all duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 transition-transform duration-300 group-hover:rotate-90" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+            </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="flex-1 flex flex-col justify-center space-y-2">
+            <a *ngFor="let item of menuItems; let i = index" [routerLink]="item.route" (click)="onClose()"
+                class="text-4xl sm:text-5xl font-light hover:text-primary hover:pl-4 transition-all duration-300 block py-2"
+                [@item]="{value: '', params: {delay: i * 50 + 100}}">
+                {{ item.label }}
+            </a>
+        </nav>
+
+        <!-- Footer / Socials -->
+        <div class="mt-12 pt-8 border-t border-white/10">
+            <div class="flex flex-col gap-4">
+                <p class="text-gray-400 text-xs uppercase tracking-[0.2em]">Get in touch</p>
+                <a href="mailto:hello&#64;arogyavault.com"
+                    class="text-lg hover:text-primary transition-colors font-light">hello&#64;arogyavault.com</a>
+
+                <div class="flex gap-8 mt-6">
+                    <a *ngFor="let social of socialLinks" [href]="social.url"
+                        class="text-xs uppercase tracking-[0.1em] text-gray-400 hover:text-white transition-colors">
+                        {{ social.label }}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

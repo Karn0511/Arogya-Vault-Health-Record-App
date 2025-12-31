@@ -1,0 +1,15 @@
+<div class="adropdown">
+  <label *ngIf="label" class="adropdown__label">{{ label }}</label>
+
+  <button type="button" class="adropdown__toggle" (click)="toggle()" aria-haspopup="listbox" [attr.aria-expanded]="open">
+    <span class="adropdown__value">{{ displayedLabel() }}</span>
+    <span class="adropdown__chev" [class.open]="open"></span>
+  </button>
+
+  <ul *ngIf="options?.length" role="listbox" class="adropdown__menu" [class.open]="open">
+    <li *ngFor="let opt of options" role="option" class="adropdown__item" [attr.aria-selected]="opt.value === value"
+        (click)="select(opt)">
+      {{ opt.label }}
+    </li>
+  </ul>
+</div>

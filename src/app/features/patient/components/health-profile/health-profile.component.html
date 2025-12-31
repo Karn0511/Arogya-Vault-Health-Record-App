@@ -1,0 +1,88 @@
+<div class="space-y-8 animate-fade-in">
+  <div>
+    <h1 class="text-3xl font-bold">Health Profile</h1>
+    <p class="text-muted-foreground">Track your vital signs and health information</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Basic Info -->
+    <div class="glass-effect p-6 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4">Basic Information</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-muted-foreground">Age</span>
+          <span class="font-semibold">{{ profile.age }} years</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-muted-foreground">Blood Type</span>
+          <span class="font-semibold">{{ profile.bloodType }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-muted-foreground">Height</span>
+          <span class="font-semibold">{{ profile.height }} cm</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-muted-foreground">Weight</span>
+          <span class="font-semibold">{{ profile.weight }} kg</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-muted-foreground">BMI</span>
+          <span class="font-semibold">{{ profile.bmi }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-muted-foreground">Emergency Contact</span>
+          <span class="font-semibold text-sm">{{ profile.emergencyContact }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vitals -->
+    <div class="lg:col-span-2 glass-effect p-6 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4">Recent Vitals</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div *ngFor="let vital of vitals" class="bg-muted p-4 rounded-lg">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-semibold text-sm">{{ vital.type }}</h3>
+            <span [ngClass]="getStatusColor(vital.status)" class="text-xs font-medium">
+              {{ vital.status }}
+            </span>
+          </div>
+          <p class="text-2xl font-bold">{{ vital.value }} <span class="text-sm text-muted-foreground">{{ vital.unit }}</span></p>
+          <p class="text-xs text-muted-foreground mt-1">Last updated: {{ vital.date }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Chronic Conditions -->
+    <div class="glass-effect p-6 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4">Chronic Conditions</h2>
+      <div *ngIf="chronicConditions.length > 0" class="space-y-3">
+        <div *ngFor="let condition of chronicConditions" class="bg-muted p-3 rounded-lg">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="font-semibold">{{ condition.name }}</h3>
+              <p class="text-xs text-muted-foreground">Diagnosed: {{ condition.diagnosedDate }}</p>
+            </div>
+            <span [ngClass]="getStatusColor(condition.status)" class="text-xs font-medium">
+              {{ condition.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <p *ngIf="chronicConditions.length === 0" class="text-muted-foreground text-sm">No chronic conditions recorded</p>
+    </div>
+
+    <!-- Allergies -->
+    <div class="glass-effect p-6 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4">Allergies</h2>
+      <div *ngIf="allergies.length > 0" class="flex flex-wrap gap-2">
+        <span *ngFor="let allergy of allergies" class="bg-red-500/10 text-red-500 px-3 py-1 rounded-full text-sm font-medium">
+          {{ allergy }}
+        </span>
+      </div>
+      <p *ngIf="allergies.length === 0" class="text-muted-foreground text-sm">No allergies recorded</p>
+    </div>
+  </div>
+</div>

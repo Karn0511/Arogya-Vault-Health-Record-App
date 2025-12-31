@@ -1,0 +1,118 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm i -g pnpm@latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: arogya-vault
+        run: pnpm run build
+
+      - name: Run backend install
+        working-directory: arogya-vault/backend
+        run: npm ci --legacy-peer-deps || true
+
+      - name: Run tests (if any)
+        run: |
+          if [ -f "package.json" ] && jq -e '.scripts.test' package.json >/dev/null 2>&1; then
+            pnpm test || echo 'Tests exited';
+          else
+            echo 'No tests found';
+          fi
+
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        if: secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push frontend image
+        if: secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN
+        uses: docker/build-push-action@v4
+        with:
+          context: ./arogya-vault
+          file: ./arogya-vault/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/arogya-frontend:latest
+
+      - name: Build and push backend image
+        if: secrets.DOCKERHUB_USERNAME && secrets.DOCKERHUB_TOKEN
+        uses: docker/build-push-action@v4
+        with:
+          context: ./arogya-vault/backend
+          file: ./arogya-vault/backend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/arogya-backend:latest
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: arogya-vault/backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Run backend lint/test (if present)
+        run: |
+          npm run lint --if-present || true
+          npm test --if-present || true
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: build-backend
+    defaults:
+      run:
+        working-directory: arogya-vault
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Angular app
+        run: npm run build --if-present

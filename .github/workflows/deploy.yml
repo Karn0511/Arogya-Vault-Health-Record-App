@@ -1,0 +1,53 @@
+name: Render Monolith CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # 1. Validation Logic
+  validate:
+    name: Build & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+
+      # Install Backend
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      # Install Frontend
+      - name: Install Frontend Dependencies
+        working-directory: .
+        run: npm ci --prefer-offline --no-audit
+
+      # Verify Build works (Important before deploying)
+      - name: Verify Frontend Build
+        working-directory: .
+        run: npm run build --configuration production
+
+  # 2. Trigger Deploy (Only on Main push)
+  deploy:
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: Trigger Render Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Render
+        if: ${{ secrets.RENDER_DEPLOY_HOOK != '' }}
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: curl -X POST $RENDER_HOOK

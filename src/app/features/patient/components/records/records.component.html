@@ -1,0 +1,246 @@
+<div class="space-y-6 animate-fade-in">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-3xl font-bold">My Medical Records</h1>
+      <p class="text-muted-foreground">Manage and organize your health documents</p>
+    </div>
+    <button (click)="openUploadModal()"
+      class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+      Add Record
+    </button>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="glass-effect p-4 rounded-lg space-y-4">
+    <div class="flex flex-col md:flex-row gap-4">
+      <!-- Search -->
+      <div class="flex-1 flex items-center gap-2 bg-muted rounded-lg px-4 py-2">
+        <svg class="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearch()"
+          placeholder="Search records or tags..." class="bg-transparent border-none outline-none flex-1 text-sm" />
+      </div>
+
+      <!-- Type Filter -->
+      <select [(ngModel)]="selectedType" (ngModelChange)="onTypeChange()"
+        class="px-4 py-2 bg-muted rounded-lg border-none outline-none cursor-pointer">
+        <option *ngFor="let type of recordTypes" [value]="type.value">
+          {{ type.label }}
+        </option>
+      </select>
+
+      <!-- View Toggle -->
+      <div class="flex gap-2 bg-muted rounded-lg p-1">
+        <button (click)="viewMode = 'grid'" [ngClass]="viewMode === 'grid' ? 'bg-background shadow' : ''"
+          class="p-2 rounded transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+        </button>
+        <button (click)="viewMode = 'list'" [ngClass]="viewMode === 'list' ? 'bg-background shadow' : ''"
+          class="p-2 rounded transition-all">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Records Grid/List -->
+  <div *ngIf="filteredRecords.length > 0"
+    [ngClass]="viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-3'">
+    <div *ngFor="let record of filteredRecords"
+      class="glass-effect p-4 rounded-lg hover:shadow-lg transition-all cursor-pointer group"
+      [ngClass]="viewMode === 'list' ? 'flex items-center justify-between' : ''">
+      <div (click)="viewRecord(record)" [ngClass]="viewMode === 'list' ? 'flex items-center gap-4 flex-1' : ''">
+        <!-- Icon -->
+        <div class="bg-primary/10 p-3 rounded-lg inline-flex" [ngClass]="viewMode === 'list' ? '' : 'mb-3'">
+          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+
+        <!-- Info -->
+        <div [ngClass]="viewMode === 'list' ? 'flex-1' : ''">
+          <h3 class="font-semibold text-sm mb-1 group-hover:text-primary transition-colors">{{ record.name }}</h3>
+          <p class="text-xs text-muted-foreground mb-2">{{ record.date }} • {{ record.size }}</p>
+          <div class="flex flex-wrap gap-1">
+            <span *ngFor="let tag of record.tags" class="text-xs bg-muted px-2 py-0.5 rounded">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-2" [ngClass]="viewMode === 'grid' ? 'mt-3 pt-3 border-t border-border' : ''">
+        <button (click)="viewRecord(record)" class="p-2 hover:bg-accent rounded transition-colors" title="View">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </button>
+        <button (click)="openShareModal(record)" class="p-2 hover:bg-accent rounded transition-colors" title="Share">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+        </button>
+        <button (click)="downloadRecord(record)" class="p-2 hover:bg-accent rounded transition-colors" title="Download">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+        </button>
+        <button (click)="deleteRecord(record)" class="p-2 hover:bg-accent rounded transition-colors text-destructive"
+          title="Delete">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="filteredRecords.length === 0" class="text-center py-12">
+    <svg class="w-16 h-16 mx-auto text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    </svg>
+    <h3 class="text-lg font-semibold mb-2">No records found</h3>
+    <p class="text-muted-foreground mb-4">Start by adding your first medical record</p>
+    <button (click)="openUploadModal()"
+      class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
+      Add Record
+    </button>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div *ngIf="showUploadModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+  <div class="glass-effect rounded-2xl p-6 max-w-lg w-full shadow-2xl animate-scale-in">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-xl font-bold">Upload Medical Record</h3>
+      <button (click)="closeUploadModal()" class="text-muted-foreground hover:text-foreground">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Upload Form -->
+    <div *ngIf="!uploading; else uploadProgressTpl" class="space-y-4">
+      <!-- File Input -->
+      <div
+        class="border-2 border-dashed border-muted-foreground/25 rounded-xl p-8 text-center hover:bg-muted/50 transition-colors relative">
+        <input type="file" (change)="onFileSelected($event)"
+          class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+        <div *ngIf="!uploadFile">
+          <svg class="w-10 h-10 mx-auto text-primary mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          <p class="font-medium">Click to upload or drag and drop</p>
+          <p class="text-sm text-muted-foreground mt-1">PDF, JPG, PNG (Max 10MB)</p>
+        </div>
+        <div *ngIf="uploadFile" class="flex items-center justify-center gap-3">
+          <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <div class="text-left">
+            <p class="font-medium truncate max-w-[200px]">{{ uploadFile.name }}</p>
+            <p class="text-xs text-muted-foreground">{{ formatBytes(uploadFile.size) }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Record Details -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="col-span-2">
+          <label class="block text-sm font-medium mb-1">Record Name</label>
+          <input [(ngModel)]="newRecord.name" type="text"
+            class="w-full px-4 py-2 bg-muted rounded-lg border-none focus:ring-2 focus:ring-primary/20 outline-none"
+            placeholder="e.g., Blood Test Results">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Type</label>
+          <select [(ngModel)]="newRecord.type"
+            class="w-full px-4 py-2 bg-muted rounded-lg border-none focus:ring-2 focus:ring-primary/20 outline-none">
+            <option *ngFor="let type of recordTypes" [value]="type.value" [hidden]="type.value === 'all'">
+              {{ type.label }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Date</label>
+          <input [(ngModel)]="newRecord.date" type="date"
+            class="w-full px-4 py-2 bg-muted rounded-lg border-none focus:ring-2 focus:ring-primary/20 outline-none">
+        </div>
+
+        <div class="col-span-2">
+          <label class="block text-sm font-medium mb-1">Tags (comma separated)</label>
+          <input [(ngModel)]="newRecord.tags" type="text"
+            class="w-full px-4 py-2 bg-muted rounded-lg border-none focus:ring-2 focus:ring-primary/20 outline-none"
+            placeholder="e.g., Routine, Checkup">
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 pt-4">
+        <button (click)="closeUploadModal()"
+          class="flex-1 px-4 py-2 border border-border rounded-lg hover:bg-muted transition-colors">Cancel</button>
+        <button (click)="uploadRecord()" [disabled]="!uploadFile || !newRecord.name"
+          class="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          Upload Record
+        </button>
+      </div>
+    </div>
+
+    <!-- Upload Progress -->
+    <ng-template #uploadProgressTpl>
+      <div class="text-center py-8 space-y-6">
+        <div class="relative w-24 h-24 mx-auto">
+          <svg class="w-full h-full animate-spin text-primary/20" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" />
+          </svg>
+          <svg class="absolute inset-0 w-full h-full text-primary -rotate-90" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="283"
+              [attr.stroke-dashoffset]="283 - (283 * uploadProgress / 100)" />
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center font-bold text-xl">
+            {{ uploadProgress }}%
+          </div>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-1">Uploading...</h4>
+          <p class="text-muted-foreground">Please wait while we secure your file</p>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Share Modal (simplified) -->
+<div *ngIf="showShareModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div class="glass-effect rounded-lg p-6 max-w-md w-full">
+    <h3 class="text-xl font-bold mb-4">Share Record</h3>
+    <p class="text-muted-foreground mb-4">Sharing "{{ selectedRecord?.name }}"</p>
+    <button (click)="closeShareModal()"
+      class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg">Close</button>
+  </div>
+</div>

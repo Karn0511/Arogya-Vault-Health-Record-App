@@ -1,0 +1,355 @@
+<div
+  class="min-h-screen w-full flex bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100 overflow-hidden relative"
+>
+  <!-- Animated Background Patterns -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div
+      class="absolute top-20 left-20 w-96 h-96 bg-teal-300/20 rounded-full blur-3xl animate-pulse-slow"
+    ></div>
+    <div
+      class="absolute bottom-20 right-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl animate-pulse-slow animation-delay-1000"
+    ></div>
+    <div
+      class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-cyan-200/20 to-blue-300/20 rounded-full blur-3xl animate-bounce-subtle"
+    ></div>
+  </div>
+
+  <!-- Left Side: Branding & Illustration with India Map -->
+  <div class="hidden lg:flex lg:w-1/2 relative items-center justify-center p-12 overflow-hidden">
+    <!-- Glass morphism card -->
+    <div class="relative z-10 w-full max-w-lg">
+      <div
+        class="glass-effect-strong p-10 rounded-3xl shadow-2xl backdrop-blur-2xl border border-white/30"
+      >
+        <!-- Logo and Title -->
+        <div class="flex items-center gap-4 mb-8">
+          <div
+            class="w-16 h-16 bg-gradient-to-br from-teal-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg"
+          >
+            <svg class="w-9 h-9 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1
+              class="text-3xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent"
+            >
+              ArogyaSecure
+            </h1>
+            <p class="text-sm text-slate-600">Your Health Data, Securely Protected.</p>
+          </div>
+        </div>
+
+        <!-- India Map Illustration -->
+        <div class="mb-6 flex justify-center">
+          <div class="relative w-48 h-56">
+            <svg viewBox="0 0 200 240" class="w-full h-full drop-shadow-lg">
+              <!-- Simplified India Map -->
+              <path
+                d="M100,20 L120,30 L140,50 L150,80 L145,110 L130,140 L120,160 L100,180 L80,160 L70,140 L55,110 L50,80 L60,50 L80,30 Z"
+                fill="url(#indiaGradient)"
+                stroke="#14b8a6"
+                stroke-width="2"
+              />
+              <defs>
+                <linearGradient id="indiaGradient" x1="0%" y1="0%" x2="0%" y1="100%">
+                  <stop offset="0%" stop-color="#14b8a6" stop-opacity="0.3" />
+                  <stop offset="100%" stop-color="#0891b2" stop-opacity="0.5" />
+                </linearGradient>
+              </defs>
+              <!-- Medical Icon overlay -->
+              <circle cx="100" cy="100" r="25" fill="#14b8a6" opacity="0.9" />
+              <path
+                d="M100,80 L100,120 M80,100 L120,100"
+                stroke="white"
+                stroke-width="4"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Carousel Content -->
+        <div class="text-center space-y-4 mb-8">
+          <h2 class="text-2xl font-bold text-slate-800">{{ currentSlide.title }}</h2>
+          <p class="text-slate-600 leading-relaxed">{{ currentSlide.description }}</p>
+        </div>
+
+        <!-- Carousel Indicators -->
+        <div class="flex justify-center gap-3">
+          <button
+            *ngFor="let slide of carouselData; let i = index"
+            (click)="setSlide(i)"
+            type="button"
+            [attr.aria-label]="'Go to slide ' + (i + 1)"
+            [attr.title]="'Go to slide ' + (i + 1)"
+            class="h-2 rounded-full transition-all duration-300 border-none p-0"
+            [ngClass]="{
+              'bg-teal-600 w-8': i === activeIndex,
+              'bg-teal-300 w-2 hover:bg-teal-400': i !== activeIndex,
+            }"
+          >
+            <span class="sr-only">{{ 'Go to slide ' + (i + 1) }}</span>
+          </button>
+        </div>
+
+        <!-- Footer Info with Digital India Logo -->
+        <div class="mt-8 pt-6 border-t border-slate-200">
+          <div class="flex items-center justify-center gap-6 mb-3">
+            <!-- Official Digital India Logo -->
+            <img
+              src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Digital_India_logo.svg/1200px-Digital_India_logo.svg.png"
+              alt="Digital India - Power To Empower"
+              class="h-14 w-auto object-contain"
+            />
+            <!-- National Health Authority Logo -->
+            <img
+              src="https://images.seeklogo.com/logo-png/38/1/national-health-authority-logo-png_seeklogo-389862.png"
+              alt="National Health Authority"
+              class="h-14 w-auto object-contain"
+            />
+          </div>
+          <p class="text-xs text-slate-500 text-center">
+            Compliant with India's Digital Health Mission.
+          </p>
+          <p class="text-xs text-slate-500 text-center mt-1">Your Privacy is Our Priority</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Login Form -->
+  <div class="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 relative z-10">
+    <!-- Back Button -->
+    <button
+      (click)="goBack()"
+      class="absolute top-8 left-8 p-2.5 rounded-xl hover:bg-white/80 text-slate-600 transition-all hover:shadow-md glass-effect"
+      aria-label="Go back"
+      title="Go back"
+    >
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 19l-7-7m0 0l7-7m-7 7h18"
+        />
+      </svg>
+    </button>
+
+    <div class="w-full max-w-md">
+      <!-- Welcome Header -->
+      <div class="text-center mb-8 animate-fade-in">
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full mb-4 border border-white/40 shadow-sm"
+        >
+          <span class="text-sm font-semibold text-teal-600">🩺 ArogyaSecure</span>
+        </div>
+        <h2 class="text-4xl font-bold text-slate-800 mb-2">Welcome Back</h2>
+        <p class="text-slate-600">Sign in to your patient portal</p>
+      </div>
+
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-6 animate-slide-up">
+        <div class="glass-effect-strong p-8 rounded-2xl shadow-xl border border-white/50">
+          <div class="space-y-5">
+            <!-- Email Input -->
+            <div>
+              <label for="email" class="block text-sm font-semibold text-slate-700 mb-2"
+                >Email Address</label
+              >
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                placeholder="e.g., patient@example.com"
+                class="input-primary w-full h-12 text-base shadow-sm hover:shadow-md transition-shadow"
+              />
+            </div>
+
+            <!-- Password Input -->
+            <div>
+              <label for="password" class="block text-sm font-semibold text-slate-700 mb-2"
+                >Password</label
+              >
+              <div class="relative">
+                <input
+                  id="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Enter your password"
+                  class="input-primary w-full h-12 text-base shadow-sm hover:shadow-md transition-shadow pr-12"
+                />
+                <button
+                  type="button"
+                  title="Toggle password visibility"
+                  class="absolute inset-y-0 right-3 flex items-center text-slate-500 hover:text-slate-700"
+                  (click)="togglePasswordVisibility()"
+                  [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                >
+                  <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.964 9.964 0 012.245-3.742m3.074-2.455A9.953 9.953 0 0112 5c4.477 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.043 5.197M15 12a3 3 0 00-3-3m0 0a2.99 2.99 0 012.12.879M12 9a3 3 0 00-2.121.879m0 0L3 18m6.879-8.121L3 6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between mt-5">
+            <label class="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                formControlName="rememberMe"
+                class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300 rounded transition-all"
+              />
+              <span class="ml-2 text-sm text-slate-700">Remember me</span>
+            </label>
+            <button
+              type="button"
+              title="Forgot password"
+              class="text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors"
+              (click)="goToForgotPassword()"
+            >
+              Forgot password?
+            </button>
+          </div>
+
+          <!-- Error Message -->
+          <ng-container *ngIf="error()">
+            <div
+              class="mt-5 p-4 rounded-xl bg-red-50 border border-red-200 flex items-center gap-3 animate-shake"
+            >
+              <svg
+                class="h-5 w-5 text-red-500 flex-shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p class="text-sm text-red-700 font-medium">{{ error() }}</p>
+            </div>
+          </ng-container>
+
+          <!-- Login Button -->
+          <button
+            type="submit"
+            [disabled]="isLoading || loginForm.invalid"
+            class="mt-6 button-primary w-full h-12 text-base font-bold shadow-lg shadow-teal-500/30 hover:shadow-xl hover:shadow-teal-500/40 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
+          >
+            <ng-container *ngIf="isLoading">
+              <svg
+                class="animate-spin -ml-1 mr-2 h-5 w-5 text-white inline"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </ng-container>
+            Secure Login
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-slate-200"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span
+              class="px-4 bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-100 text-slate-600 font-medium"
+              >Or continue with</span
+            >
+          </div>
+        </div>
+
+        <!-- OAuth Buttons -->
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            type="button"
+            title="Sign in with Google"
+              aria-label="Sign in with Google"
+              (click)="onGoogleSignIn()"
+              [disabled]="isGoogleLoading"
+              class="flex items-center justify-center gap-2 px-4 py-3 glass-effect border border-white/50 rounded-xl shadow-sm text-sm font-semibold text-slate-700 hover:shadow-md transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg class="h-5 w-5" viewBox="0 0 24 24">
+              <path
+                fill="#EA4335"
+                d="M5.26620003,9.76452941 C6.19878754,6.93863203 8.85444915,4.90909091 12,4.90909091 C13.6909091,4.90909091 15.2181818,5.50909091 16.4181818,6.49090909 L19.9090909,3 C17.7818182,1.14545455 15.0545455,0 12,0 C7.27006974,0 3.1977497,2.69829785 1.23999023,6.65002441 L5.26620003,9.76452941 Z"
+              />
+              <path
+                fill="#34A853"
+                d="M16.0407269,18.0125889 C14.9509167,18.7163016 13.5660892,19.0909091 12,19.0909091 C8.86648613,19.0909091 6.21911939,17.076871 5.27698177,14.2678769 L1.23746264,17.3349879 C3.19279051,21.2936293 7.26500293,24 12,24 C14.9328362,24 17.7353462,22.9573905 19.834192,20.9995801 L16.0407269,18.0125889 Z"
+              />
+              <path
+                fill="#4A90E2"
+                d="M19.834192,20.9995801 C22.0291676,18.9520994 23.4545455,15.903663 23.4545455,12 C23.4545455,11.2909091 23.3454545,10.5818182 23.1818182,9.90909091 L12,9.90909091 L12,14.4545455 L18.4363636,14.4545455 C18.1187732,16.013626 17.2662994,17.2212117 16.0407269,18.0125889 L19.834192,20.9995801 Z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.27698177,14.2678769 C5.03832634,13.556323 4.90909091,12.7937589 4.90909091,12 C4.90909091,11.2182781 5.03443647,10.4668121 5.26620003,9.76452941 L1.23999023,6.65002441 C0.43658717,8.26043162 0,10.0753848 0,12 C0,13.9195484 0.444780743,15.7301709 1.23746264,17.3349879 L5.27698177,14.2678769 Z"
+              />
+            </svg>
+            Google
+          </button>
+          <button
+            type="button"
+            title="Sign in with mobile OTP"
+              aria-label="Sign in with mobile OTP"
+              (click)="onMobileLogin()"
+              class="flex items-center justify-center gap-2 px-4 py-3 glass-effect border border-white/50 rounded-xl shadow-sm text-sm font-semibold text-slate-700 hover:shadow-md transition-all duration-200 hover:scale-105"
+          >
+            <span class="text-lg">📱</span>
+            Mobile (OTP)
+          </button>
+        </div>
+      </form>
+
+      <!-- Sign Up Link -->
+      <p class="text-center text-sm text-slate-600 mt-6 animate-fade-in">
+        Don't have an account?
+        <a
+          routerLink="/auth/signup"
+          class="font-bold text-teal-600 hover:text-teal-700 transition-colors"
+          >Sign up now</a
+        >
+      </p>
+
+      <!-- Footer Links -->
+      <div class="flex justify-center gap-6 mt-8 text-xs text-slate-500 animate-fade-in">
+        <a href="#" class="hover:text-teal-600 transition-colors">Privacy Policy</a>
+        <a href="#" class="hover:text-teal-600 transition-colors">Terms of Service</a>
+        <a href="#" class="hover:text-teal-600 transition-colors">Help Center</a>
+        <a href="#" class="hover:text-teal-600 transition-colors">Contact Support</a>
+      </div>
+    </div>
+  </div>
+</div>

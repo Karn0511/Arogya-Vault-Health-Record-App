@@ -1,0 +1,18 @@
+:host {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.map-outline {
+    filter: drop-shadow(0 0 10px rgba(79, 70, 229, 0.3));
+}
+
+.map-outline:hover {
+    filter: drop-shadow(0 0 20px rgba(79, 70, 229, 0.5));
+}
+
+.region-group:hover .region-marker {
+    transform: scale(1.1);
+    transform-origin: center;
+}

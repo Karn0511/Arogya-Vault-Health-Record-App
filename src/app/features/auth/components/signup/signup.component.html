@@ -1,0 +1,372 @@
+<div
+  class="min-h-screen w-full bg-gradient-to-br from-slate-100 via-blue-50 to-slate-100 flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-white border-2 border-slate-300 rounded-2xl shadow-2xl p-8 animate-fade-in">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold">Create Account</h1>
+      <p class="text-slate-600 mt-2">Join ArogyaVault to manage your health records</p>
+    </div>
+
+    <!-- Google Sign In Button -->
+    <div class="mb-6">
+      <app-google-signin-button
+        [loading]="isGoogleLoading"
+        (clicked)="onGoogleSignIn()"
+        class="w-full"
+      ></app-google-signin-button>
+    </div>
+
+    <!-- OTP/Email Toggle -->
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <ng-container *ngIf="signupMode === 'email'">
+        <button type="button" (click)="switchToEmailSignup()"
+          class="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl transition-all flex items-center justify-center gap-2 font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <span class="text-sm">Email</span>
+        </button>
+      </ng-container>
+      <ng-container *ngIf="signupMode !== 'email'">
+        <button type="button" (click)="switchToEmailSignup()"
+          class="px-4 py-3 bg-muted hover:bg-muted/80 rounded-xl transition-all flex items-center justify-center gap-2 font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <span class="text-sm">Email</span>
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="signupMode === 'otp'">
+        <button type="button" (click)="switchToMobileOtp()"
+          class="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl transition-all flex items-center justify-center gap-2 font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          <span class="text-sm">Mobile OTP</span>
+        </button>
+      </ng-container>
+      <ng-container *ngIf="signupMode !== 'otp'">
+        <button type="button" (click)="switchToMobileOtp()"
+          class="px-4 py-3 bg-muted hover:bg-muted/80 rounded-xl transition-all flex items-center justify-center gap-2 font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          <span class="text-sm">Mobile OTP</span>
+        </button>
+      </ng-container>
+    </div>
+
+    <div class="relative my-4">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-slate-300"></div>
+      </div>
+      <div class="relative flex justify-center text-sm">
+        <span class="px-2 bg-white text-slate-500">Or continue with {{ signupMode === 'email' ? 'email' : 'mobile' }}</span>
+      </div>
+    </div>
+
+    <!-- Email Signup Form -->
+    <ng-container *ngIf="signupMode === 'email'">
+      <form [formGroup]="signupForm" (ngSubmit)="onSignup()" class="space-y-4">
+      <!-- Full Name -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label for="fullName" class="text-sm font-medium text-slate-700">Full Name</label>
+          <span *ngIf="signupForm.get('fullName')?.touched && signupForm.get('fullName')?.errors?.['required']" class="text-xs text-red-500">Full name is required</span>
+          <span *ngIf="signupForm.get('fullName')?.errors?.['minlength']" class="text-xs text-red-500">Minimum 2 characters</span>
+        </div>
+        <input
+          id="fullName"
+          name="fullName"
+          type="text"
+          formControlName="fullName"
+          placeholder="John Doe"
+          autocomplete="name"
+          [class.border-red-300]="signupForm.get('fullName')?.invalid && signupForm.get('fullName')?.touched"
+          class="w-full mt-1 px-4 py-3 rounded-lg text-slate-900 placeholder:text-slate-400 bg-slate-50 border-2 border-slate-300 focus:bg-white focus:border-blue-500 outline-none transition-all" />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label for="email" class="text-sm font-medium text-slate-700">Email address</label>
+          <span *ngIf="signupForm.get('email')?.touched && signupForm.get('email')?.errors?.['required']" class="text-xs text-red-500">Email is required</span>
+          <span *ngIf="signupForm.get('email')?.errors?.['email']" class="text-xs text-red-500">Invalid email format</span>
+        </div>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          formControlName="email"
+          placeholder="name@mail.com"
+          autocomplete="email"
+          [class.border-red-300]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+          class="w-full mt-1 px-4 py-3 rounded-lg text-slate-900 placeholder:text-slate-400 bg-slate-50 border-2 border-slate-300 focus:bg-white focus:border-blue-500 outline-none transition-all" />
+      </div>
+
+      <!-- Phone -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label for="phone" class="text-sm font-medium text-slate-700">Phone</label>
+          <span *ngIf="signupForm.get('phone')?.touched && signupForm.get('phone')?.errors?.['required']" class="text-xs text-red-500">Phone is required</span>
+          <span *ngIf="signupForm.get('phone')?.errors?.['pattern'] || signupForm.get('phone')?.errors?.['minlength']" class="text-xs text-red-500">10 digits required</span>
+        </div>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          formControlName="phone"
+          placeholder="9876543210"
+          autocomplete="tel"
+          [class.border-red-300]="signupForm.get('phone')?.invalid && signupForm.get('phone')?.touched"
+          class="w-full mt-1 px-4 py-3 rounded-lg text-slate-900 placeholder:text-slate-400 bg-slate-50 border-2 border-slate-300 focus:bg-white focus:border-blue-500 outline-none transition-all" />
+      </div>
+
+      <!-- Password -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label for="password" class="text-sm font-medium text-slate-700">Password</label>
+          <span *ngIf="signupForm.get('password')?.touched && signupForm.get('password')?.errors?.['required']" class="text-xs text-red-500">Password is required</span>
+          <span *ngIf="signupForm.get('password')?.errors?.['minlength']" class="text-xs text-red-500">Minimum 8 characters</span>
+          <span *ngIf="signupForm.get('password')?.errors?.['passwordStrength']" class="text-xs text-red-500">Needs upper, lower, number & special char</span>
+        </div>
+        <div class="relative">
+          <input
+            id="password"
+            name="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            [class.border-red-300]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+            class="w-full mt-1 px-4 py-3 pr-10 rounded-lg text-slate-900 placeholder:text-slate-400 bg-slate-50 border-2 border-slate-300 focus:bg-white focus:border-blue-500 outline-none transition-all" />
+          <button
+            type="button"
+            (click)="showPassword = !showPassword"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+          >
+            <ng-container *ngIf="showPassword">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+              </svg>
+            </ng-container>
+            <ng-container *ngIf="!showPassword">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </ng-container>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label for="confirmPassword" class="text-sm font-medium text-slate-700">Confirm Password</label>
+          <span *ngIf="signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched" class="text-xs text-red-500">Passwords don't match</span>
+        </div>
+        <div class="relative">
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="confirmPassword"
+            placeholder="••••••••"
+            autocomplete="new-password"
+            [class.border-red-300]="(signupForm.hasError('passwordMismatch') || signupForm.get('confirmPassword')?.invalid) && signupForm.get('confirmPassword')?.touched"
+            class="w-full mt-1 px-4 py-3 pr-10 rounded-lg text-slate-900 placeholder:text-slate-400 bg-slate-50 border-2 border-slate-300 focus:bg-white focus:border-blue-500 outline-none transition-all" />
+          <button
+            type="button"
+            (click)="showConfirmPassword = !showConfirmPassword"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+          >
+            <ng-container *ngIf="showConfirmPassword">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+              </svg>
+            </ng-container>
+            <ng-container *ngIf="!showConfirmPassword">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </ng-container>
+          </button>
+        </div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="pt-2">
+        <label class="flex items-start gap-2 font-normal cursor-pointer text-sm text-slate-700">
+          <input
+            type="checkbox"
+            formControlName="agreeTerms"
+            class="mt-1 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            [class.border-red-300]="signupForm.get('agreeTerms')?.invalid && signupForm.get('agreeTerms')?.touched"
+          />
+          <span>I agree to the <a href="/terms" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="/privacy" class="text-blue-600 hover:underline">Privacy Policy</a></span>
+        </label>
+        <p *ngIf="signupForm.get('agreeTerms')?.touched && signupForm.get('agreeTerms')?.errors?.['required']" class="mt-1 text-xs text-red-500">You must agree to the terms and conditions</p>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="error" class="p-3 bg-red-50 border border-red-200 rounded-lg">
+        <p class="text-sm text-red-600">{{ error }}</p>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        [disabled]="isLoading || signupForm.invalid"
+        class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+      >
+        <ng-container *ngIf="isLoading">
+          <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </ng-container>
+        Create Account
+      </button>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="signupMode === 'otp'">
+      <!-- Mobile OTP Form -->
+      <form [formGroup]="otpForm" (ngSubmit)="onMobileOtpSignup()" class="space-y-4">
+        <ng-container *ngIf="!otpSent">
+      <!-- Phone Number Input -->
+      <div>
+        <div class="flex justify-between items-center">
+          <label for="mobilePhone" class="text-sm font-medium text-slate-700">Mobile Number</label>
+            <span *ngIf="otpForm.get('mobilePhone')?.touched && otpForm.get('mobilePhone')?.errors?.['required']" class="text-xs text-red-500">Phone is required</span>
+            <span *ngIf="otpForm.get('mobilePhone')?.errors?.['pattern'] || otpForm.get('mobilePhone')?.errors?.['minlength']" class="text-xs text-red-500">10 digits required</span>
+        </div>
+        <div class="flex gap-2">
+          <div class="w-16">
+            <input
+              type="text"
+              value="+91"
+              disabled
+              class="w-full px-3 py-3 rounded-lg bg-slate-100 border-2 border-slate-300 text-slate-600 font-medium text-center"
+            />
+          </div>
+          <input
+            id="mobilePhone"
+            name="mobilePhone"
+            type="tel"
+            formControlName="mobilePhone"
+            placeholder="9876543210"
+            autocomplete="tel"
+            [class.border-red-300]="otpForm.get('mobilePhone')?.invalid && otpForm.get('mobilePhone')?.touched"
+            class="flex-1 px-4 py-3 rounded-lg text-slate-900 placeholder:text-slate-400 bg-slate-50 border-2 border-slate-300 focus:bg-white focus:border-blue-500 outline-none transition-all"
+          />
+        </div>
+      </div>
+
+        <!-- Send OTP Button -->
+      <button
+        type="button"
+        (click)="sendOtp()"
+        [disabled]="otpSendLoading || !otpForm.get('mobilePhone')?.valid"
+        class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+      >
+        <ng-container *ngIf="otpSendLoading">
+          <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </ng-container>
+        Send OTP
+      </button>
+        </ng-container>
+        <ng-container *ngIf="otpSent">
+        <!-- OTP Verification Section -->
+      <div class="text-center mb-4">
+        <p class="text-sm text-slate-600">Verification code sent to<br />+91 {{ maskedPhone }}</p>
+        <button
+          type="button"
+          (click)="resetOtpForm()"
+          class="text-sm text-blue-600 hover:underline mt-2"
+        >
+          Change number
+        </button>
+      </div>
+
+        <!-- OTP Input Fields -->
+        <div class="flex justify-center gap-2 mb-4">
+          <ng-container *ngFor="let i of [0,1,2,3,4,5]; let idx = index">
+            <input
+              [formControlName]="'otp' + i"
+              type="text"
+              maxlength="1"
+              inputmode="numeric"
+              (input)="onOtpInput($event, i)"
+              [attr.data-index]="i"
+              class="w-12 h-12 text-center text-lg font-bold rounded-lg border-2 border-slate-300 focus:border-blue-500 focus:bg-blue-50 outline-none transition-all"
+            />
+          </ng-container>
+        </div>
+
+      <!-- Resend OTP -->
+        <div class="text-center text-sm">
+          <ng-container *ngIf="otpResendTimer > 0">
+            <p class="text-slate-600">Resend OTP in <span class="font-semibold">{{ otpResendTimer }}s</span></p>
+          </ng-container>
+          <ng-container *ngIf="otpResendTimer <= 0">
+            <button
+              type="button"
+              (click)="resendOtp()"
+              [disabled]="otpResendLoading"
+              class="text-blue-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ng-container *ngIf="otpResendLoading">
+                <span class="inline-flex items-center gap-1">
+                  <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sending...
+                </span>
+              </ng-container>
+              <ng-container *ngIf="!otpResendLoading">Resend OTP</ng-container>
+            </button>
+          </ng-container>
+        </div>
+
+      <!-- Error Message -->
+        <div *ngIf="error" class="p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-sm text-red-600">{{ error }}</p>
+        </div>
+
+      <!-- Verify OTP Button -->
+      <button
+        type="submit"
+        [disabled]="isLoading || !isOtpComplete()"
+        class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+      >
+        <ng-container *ngIf="isLoading">
+          <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </ng-container>
+        Verify OTP
+      </button>
+        </ng-container>
+      </form>
+    </ng-container>
+
+    <div class="mt-6 text-center text-sm">
+      <span class="text-slate-600">Already have an account?</span>
+      <a
+        routerLink="/auth/login"
+        class="ml-2 font-semibold text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+      >
+        Sign in
+      </a>
+    </div>
+  </div>
+</div>

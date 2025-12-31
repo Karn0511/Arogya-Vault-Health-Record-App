@@ -1,0 +1,185 @@
+<div class="space-y-6">
+    <!-- Header -->
+    <!-- Top Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/10">
+        <div>
+            <h1 class="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
+                <span class="p-2 rounded-lg bg-orange-500/20 text-orange-400">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                </span>
+                System Audit Logs
+            </h1>
+            <p class="text-slate-400 text-sm mt-1 ml-12">Monitor system security and access events</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <button (click)="loadLogs()"
+                class="p-2 text-slate-500 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                title="Refresh Logs">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+            </button>
+            <div class="relative">
+                <input type="text" placeholder="Search logs..."
+                    class="pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 w-64 shadow-sm">
+                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="bg-slate-900/40 backdrop-blur-sm rounded-2xl border border-slate-800 shadow-sm overflow-hidden">
+
+        <!-- Table -->
+        <div class="div overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-slate-950/30 border-b border-slate-800">
+                    <tr>
+                        <th class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">User</th>
+                        <th class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">Action</th>
+                        <th class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">Resource</th>
+                        <th class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">Details</th>
+                        <th class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">IP / Device</th>
+                        <th class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">Time</th>
+                        <th class="px-6 py-4 font-semibold text-slate-700 dark:text-slate-200">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+
+                    <!-- Loading Skeleton -->
+                    <ng-container *ngIf="loading">
+                        <tr *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+                            <td class="px-6 py-4">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-16"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-20"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-32"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-16"></div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-12"></div>
+                            </td>
+                        </tr>
+                    </ng-container>
+
+                    <!-- Data Rows -->
+                    <tr *ngFor="let log of logs" class="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors">
+                        <!-- User -->
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-xs uppercase">
+                                    {{ log.userId?.fullName?.charAt(0) || '?' }}
+                                </div>
+                                <div>
+                                    <div class="font-medium text-slate-900 dark:text-white">
+                                        {{ log.userId?.fullName || 'Unknown User' }}
+                                    </div>
+                                    <div class="text-xs text-slate-500">{{ log.userId?.email || 'N/A' }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Action -->
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
+                                [ngClass]="getActionClass(log.action)">
+                                {{ log.action }}
+                            </span>
+                        </td>
+
+                        <!-- Resource -->
+                        <td class="px-6 py-4 text-slate-600 dark:text-slate-300">
+                            {{ log.resource || '-' }}
+                        </td>
+
+                        <!-- Details -->
+                        <td class="px-6 py-4">
+                            <div class="max-w-xs truncate text-xs text-slate-500" [title]="JSON.stringify(log.details)">
+                                {{ formatDetails(log.details) }}
+                            </div>
+                        </td>
+
+                        <!-- IP/Device -->
+                        <td class="px-6 py-4">
+                            <div class="text-xs text-slate-600 dark:text-slate-400 font-mono">
+                                {{ log.ipAddress || 'Unknown IP' }}
+                            </div>
+                            <div class="text-[10px] text-slate-400 truncate max-w-[100px]" [title]="log.userAgent">
+                                {{ log.userAgent }}
+                            </div>
+                        </td>
+
+                        <!-- Time -->
+                        <td class="px-6 py-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                            {{ log.timestamp | date:'medium' }}
+                        </td>
+
+                        <!-- Status -->
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-1.5"
+                                [ngClass]="log.status === 'SUCCESS' ? 'text-emerald-500' : 'text-red-500'">
+                                <div class="w-1.5 h-1.5 rounded-full"
+                                    [ngClass]="log.status === 'SUCCESS' ? 'bg-emerald-500' : 'bg-red-500'"></div>
+                                <span class="text-xs font-medium">{{ log.status }}</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Empty State -->
+                    <tr *ngIf="!loading && logs.length === 0">
+                        <td colspan="7" class="px-6 py-12 text-center">
+                            <div class="flex flex-col items-center justify-center text-slate-400">
+                                <svg class="w-12 h-12 mb-3 opacity-20" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <p>No audit logs found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div
+            class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span class="text-xs text-slate-500">
+                Page {{ currentPage }} of {{ totalPages }} <span class="mx-1">•</span> {{ totalLogs }} Total Events
+            </span>
+
+            <div class="flex items-center gap-2">
+                <button [disabled]="currentPage === 1 || loading" (click)="changePage(currentPage - 1)"
+                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Previous
+                </button>
+                <button [disabled]="currentPage === totalPages || loading" (click)="changePage(currentPage + 1)"
+                    class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
